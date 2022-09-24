@@ -9,6 +9,7 @@ server_api = ServerApi('1')
 client = MongoClient("mongodb+srv://sjetalpuria:shivani@cluster0.pgvmxuh.mongodb.net/?retryWrites=true&w=majority", server_api=ServerApi('1'))
 db = client["RecipesApp"]
 users = db["users"]
+recipes = db["recipes"]
 
 
 @api.route('/')
@@ -46,9 +47,10 @@ def login(username, password):
 ###########################################################
 @api.route("/register/", methods=["POST"])
 def register():
-    username = request.get_json("username") # get data passed as json
-    password = request.get_json("password")
-
+    data = request.get_json() # get data passed as json
+    username = data["username"]
+    password = data["password"]
+    
     # check if this username is already in database
     result = users.find_one({"username": username})
     if result is not None:
